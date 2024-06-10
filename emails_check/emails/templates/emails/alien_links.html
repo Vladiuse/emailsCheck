@@ -1,0 +1,28 @@
+{% extends 'emails/base.html'%}
+{%block content%}
+<div class="container">
+    <h4>Total: {{alien_links|length}}</h4>
+    <table class="table">
+        <thead>
+          <tr>
+            <th >id</th>
+            <th >Link</th>
+            <th >send_time</th>
+            <th>Mail</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+            {%for link in alien_links%}
+          <tr>
+            <td>{{link.id}}</td>
+            <td>{{link.link}}</td>
+            <td>{{link.mail.send_time}}</td>
+            <td><a target="_blank" href="{%url 'emails:mail_html' link.mail.pk%}">See mail</a></td>
+            <td><a target="_blank" href="{%url 'emails:email' link.mail.email %}">See {{link.mail.email}}</a></td>
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
+</div>
+{%endblock%}

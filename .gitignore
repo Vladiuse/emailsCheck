@@ -1,0 +1,9 @@
+.venv
+*.pyc
+*.sqlite3
+*_to_create.txt
+emails_check/media
+
+test.py
+x.py
+emails_check/scripts/x.py
