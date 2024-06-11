@@ -1,14 +1,20 @@
 {% extends 'emails/base.html'%}
 {%block content%}
 
-
+<div class="container">
+  <h3>Мыл: {{emails|length}}</h3>
+  <h3>Всего писем: {{total_mails}}</h3>
+</div>
 <div class="container">
     <table class="table">
         <thead>
           <tr>
             <th >Email</th>
             <th >Password</th>
+
             <th >emails count</th>
+            <th>Email Pack</th>
+            <th>last_update</th>
           </tr>
         </thead>
         <tbody>
@@ -17,6 +23,9 @@
             <td><a href="{%url 'emails:email' email.pk %}">{{email.login}}</a></td>
             <td>{{email.password}}</td>
             <td>{{email.mails_count}}</td>
+            <td>{{email.email_pack}}</td>
+
+            <td>{{email.last_update}}</td>
           </tr>
           {%endfor%}
         </tbody>

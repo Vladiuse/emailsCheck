@@ -37,7 +37,22 @@ def delete_field_file(*fields):
                 os.remove(field.path)
 
 
+class EmailPack(models.Model):
+    date = models.DateField(blank=True, null=True)
+    name = models.CharField(max_length=50)
+    desc = models.TextField(blank=True)
+
+    def __str__(self):
+        return f'EmailPack: {self.name}'
 class Email(models.Model):
+    email_pack = models.ForeignKey(
+        EmailPack,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='emails',
+        related_query_name='email',
+    )
     login = models.CharField(max_length=50, primary_key=True)
     password = models.CharField(max_length=50)
     emails_count = models.PositiveIntegerField(blank=True, null=True)
@@ -91,6 +106,7 @@ class Email(models.Model):
         mails.delete()
 
 
+
 class MailQuerySet(models.QuerySet):
 
     def delete(self):
@@ -101,8 +117,7 @@ class MailQuerySet(models.QuerySet):
 
 class Mail(models.Model):
     objects = MailQuerySet.as_manager()
-
-    email = models.ForeignKey(Email, on_delete=models.CASCADE)
+    email = models.ForeignKey(Email, on_delete=models.CASCADE, related_name='mails', related_query_name='mail')
     subject = models.CharField(max_length=255)
     raw_send_time = models.CharField(max_length=255)
     send_time = models.DateTimeField(blank=True, null=True)
@@ -135,7 +150,7 @@ class Mail(models.Model):
 
 
 class MailLink(models.Model):
-    mail = models.ForeignKey(Mail, on_delete=models.CASCADE, related_name='links')
+    mail = models.ForeignKey(Mail, on_delete=models.CASCADE, related_name='links', related_query_name='link')
     raw_html_link = models.CharField(max_length=255, blank=True)
     link = models.CharField(max_length=255, blank=True)
     domain = models.ForeignKey(Domain, on_delete=models.SET_NULL, blank=True, null=True)

@@ -2,6 +2,7 @@
 *.pyc
 *.sqlite3
 *_to_create.txt
+*.txt
 emails_check/media
 
 test.py
