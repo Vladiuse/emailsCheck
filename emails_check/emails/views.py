@@ -22,6 +22,7 @@ def email_pack(request, email_pack_id):
         'email_pack': email_pack,
         'emails': emails,
         'total_mails': total_mails,
+        'desc': email_pack.desc,
     }
     return render(request, 'emails/emails_list.html', content)
 
@@ -41,7 +42,7 @@ def emails_send_by_date(request, date):
     date = datetime.strptime(date, '%Y-%m-%d').date()
     emails = Email.objects.select_related('email_pack').prefetch_related(
         'mails'
-    ).filter(mail__send_time__date=date).annotate(mails_count=Count('mail'))
+    ).filter(mail__send_time__date=date).annotate(mails_count=Count('mail')).order_by('-email_pack__date')
     total_mails = sum(email.mails_count for email in emails)
     content = {
         'emails': emails,
@@ -60,15 +61,21 @@ def emails(request):
 
 def email(request, email_login):
     email = Email.objects.get(pk=email_login)
+    mails = Mail.objects.filter(email=email)
     content = {
         'email': email,
+        'mails': mails,
     }
     return render(request, 'emails/email.html', content)
 
 
-def mail_html(request, mail_id):
+def mail(request, mail_id):
     mail = Mail.objects.get(pk=mail_id)
-    return HttpResponse(mail.html_text)
+    content = {
+        'mail': mail,
+        'email': mail.email,
+    }
+    return render(request, 'emails/mail.html', content)
 
 
 def alien_links(request):

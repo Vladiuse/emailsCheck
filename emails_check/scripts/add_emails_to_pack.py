@@ -15,8 +15,11 @@ if not_have_pack_qs.exists():
     print('Not all emails dont have pack!')
     exit()
 
-mail_pack = EmailPack.objects.create(
-    name='09.06_4x',
+# mail_pack = EmailPack.objects.create(
+#     name='24.04',
+# )
+mail_pack = EmailPack.objects.get(
+    name='24.04',
 )
 qs.update(email_pack=mail_pack)
 print(mail_pack)

@@ -3,7 +3,7 @@ from .models import EmailPack
 from django.db.models import Count
 
 class EmailPackAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name', 'date', 'emails_count']
+    list_display = ['pk', 'name', 'date', 'desc','emails_count', ]
     list_display_links = ['pk', 'name']
     @admin.display(description="EMails in pack")
     def emails_count(self,obj):

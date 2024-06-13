@@ -42,6 +42,9 @@ class EmailPack(models.Model):
     name = models.CharField(max_length=50)
     desc = models.TextField(blank=True)
 
+    class Meta:
+        ordering = ('-date',)
+
     def __str__(self):
         return f'EmailPack: {self.name}'
 class Email(models.Model):
@@ -153,7 +156,17 @@ class MailLink(models.Model):
     mail = models.ForeignKey(Mail, on_delete=models.CASCADE, related_name='links', related_query_name='link')
     raw_html_link = models.CharField(max_length=255, blank=True)
     link = models.CharField(max_length=255, blank=True)
-    domain = models.ForeignKey(Domain, on_delete=models.SET_NULL, blank=True, null=True)
+    domain = models.ForeignKey(
+        Domain,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='mail_links',
+        related_query_name='mail_link',
+    )
+
+    def __str__(self):
+        return self.link
 
     @staticmethod
     def create_links(mail: Mail, *links):

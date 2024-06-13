@@ -1,0 +1,22 @@
+<table class="table">
+    <thead>
+      <tr>
+        <th >Email</th>
+        <th >Password</th>
+        <th >emails count</th>
+        <th>Email Pack</th>
+        <th>last_update</th>
+      </tr>
+    </thead>
+    <tbody>
+        {%for email in emails%}
+      <tr>
+        <td><a href="{%url 'emails:email' email.pk %}">{{email.login}}</a></td>
+        <td>{{email.password}}</td>
+        <td>{{email.mails_count}}</td>
+        <td>{{email.email_pack}}</td>
+        <td>{{email.last_update}}</td>
+      </tr>
+      {%endfor%}
+    </tbody>
+  </table>

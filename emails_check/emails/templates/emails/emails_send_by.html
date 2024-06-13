@@ -1,0 +1,14 @@
+{% extends 'emails/base.html'%}
+{%block content%}
+<div class="container">
+    <form action="" method="POST">
+        {%csrf_token%}
+        <div class="mb-3">
+            <label for="date" class="form-label">Chose date:</label>
+            <input type="date" name="date" id="date" required>
+          </div>
+        
+        <button type="submit" class="btn btn-primary">Check</button>
+    </form>
+</div>
+{%endblock%}

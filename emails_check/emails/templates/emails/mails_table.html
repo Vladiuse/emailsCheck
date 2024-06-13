@@ -1,0 +1,24 @@
+<table class="table">
+    <thead>
+        <tr>
+        <th >id</th>
+        <th >From</th>
+        <th >Subject</th>
+        <th >Date</th>
+        <th >Raw Date</th>
+        <th >Show</th>
+        </tr>
+    </thead>
+    <tbody>
+        {%for mail in mails%}
+        <tr>
+        <td>{{mail.id}}</td>
+        <td>{{mail.author}}</td>
+        <td>{{mail.subject}}</td>
+        <td>{{mail.send_time}}</td>
+        <td>{{mail.raw_send_time}}</td>
+        <td><a href="{%url 'emails:mail' mail.pk%}">See</a></td>
+        </tr>
+        {%endfor%}
+    </tbody>
+    </table>

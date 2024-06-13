@@ -2,10 +2,9 @@
 {%block content%}
 <div class="container">
     <p>Email: {{email.login}}</p>
-    <p>Mails: {{email.mail_count}}</p>
+    <p>Mails: {{mails|length}}</p>
 </div>
 <div class="container">
-
     <table class="table">
         <thead>
           <tr>
@@ -18,14 +17,14 @@
           </tr>
         </thead>
         <tbody>
-            {%for mail in email.mail_set.all%}
+            {%for mail in mails%}
           <tr>
             <td>{{mail.id}}</td>
             <td>{{mail.author}}</td>
             <td>{{mail.subject}}</td>
             <td>{{mail.send_time}}</td>
             <td>{{mail.raw_send_time}}</td>
-            <td><a href="{%url 'emails:mail_html' mail.pk%}">See</a></td>
+            <td><a href="{%url 'emails:mail' mail.pk%}">See</a></td>
           </tr>
           {%endfor%}
         </tbody>

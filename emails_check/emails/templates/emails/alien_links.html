@@ -18,7 +18,7 @@
             <td>{{link.id}}</td>
             <td>{{link.link}}</td>
             <td>{{link.mail.send_time}}</td>
-            <td><a target="_blank" href="{%url 'emails:mail_html' link.mail.pk%}">See mail</a></td>
+            <td><a target="_blank" href="{%url 'emails:mail' link.mail.pk%}">See mail</a></td>
             <td><a target="_blank" href="{%url 'emails:email' link.mail.email %}">See {{link.mail.email}}</a></td>
           </tr>
           {%endfor%}
