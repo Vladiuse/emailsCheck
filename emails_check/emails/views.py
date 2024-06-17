@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Email, Mail, MailLink, EmailPack
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 from django.http import HttpResponse
 from datetime import datetime
 
@@ -47,8 +47,9 @@ def emails_send_by_date(request, date):
     content = {
         'emails': emails,
         'total_mails': total_mails,
+        'date': date,
     }
-    return render(request, 'emails/emails_list.html', content)
+    return render(request, 'emails/date_send.html', content)
 
 
 def emails(request):
@@ -84,3 +85,28 @@ def alien_links(request):
         'alien_links': alien_links,
     }
     return render(request, 'emails/alien_links.html', content)
+
+
+def test(request):
+    date = datetime.today().date()
+    teams_stat = MailLink.objects.select_related('team'). \
+        filter(mail__send_time__date=date).values('team').annotate(mail_links_count=Count('team')).order_by('-mail_links_count')
+    author_mails_stat = Mail.objects.filter(send_time__date='2024-06-17').values('author_email').annotate(
+        count=Count('author_email')).order_by('-count')
+    mails = Mail.objects.select_related('email__email_pack').filter(send_time__date=date)
+    packs = dict()
+    for mail in mails:
+        try:
+            packs[mail.email.email_pack] += 1
+        except KeyError:
+            packs[mail.email.email_pack] = 1
+    packs = [(pack, mails_count) for pack, mails_count in packs.items()]
+    packs.sort(key=lambda item: item[0].date, reverse=True)
+    content = {
+        'mails': mails,
+        'date': date,
+        'packs': packs,
+        'teams_stat': teams_stat,
+        'author_mails_stat': author_mails_stat,
+    }
+    return render(request, 'emails/test.html', content)

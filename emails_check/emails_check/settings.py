@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'emails.apps.EmailsConfig',
     'domains.apps.DomainsConfig',
+    'teams.apps.TeamsConfig',
 
     'django_extensions',
 ]

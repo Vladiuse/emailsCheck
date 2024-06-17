@@ -20,6 +20,6 @@ if domains_with_pack.exists():
         print(domain)
     print('Некоторые домены уже есть в паке')
 
-domain_pack = DomainPack.objects.create(date='2024-07-12')
+domain_pack = DomainPack.objects.create(date='2024-07-13')
 qs.update(pack=domain_pack)
 print(domain_pack.date, domain_pack)

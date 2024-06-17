@@ -1,0 +1,88 @@
+{% extends 'emails/base.html'%}
+{%load emails%}
+{%block content%}  author_mails_stat
+<h2>Стата за {{date}}</h2>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <a class="btn btn-secondary" data-bs-toggle="collapse" href="#byTeams" role="button" aria-expanded="false" aria-controls="byTeams">
+        По командам
+      </a>
+     <div class="collapse" id="byTeams">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Team</th>
+            <th scope="col">Mails count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%for item in teams_stat%}
+          <tr>
+            <td>{{item.team}}</td>
+            <td>{{item.mail_links_count}}</td>
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
+     </div>
+
+    </div>
+    <div class="col">
+      <a class="btn btn-secondary" data-bs-toggle="collapse" href="#bySendMails" role="button" aria-expanded="false" aria-controls="bySendMails">
+        по мыллам
+      </a>
+      <div id="bySendMails" class="collapse">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Email</th>
+              <th scope="col">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%for item in author_mails_stat%}
+            <tr>
+              <td>{{item.author_email}}</td>
+              <td>{{item.count}}</td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+     
+    </div>
+  </div>
+</div>
+
+
+<div class="container">
+  <h4>Разбивка по пакам емейлов</h4>
+  <div class="accordion" id="emailPacks">
+
+    {%for email_pack, mails_count in packs%}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading-{{forloop.counter}}">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseOne-{{forloop.counter}}" aria-expanded="true"
+          aria-controls="collapseOne-{{forloop.counter}}">
+          {{email_pack}}, Емейлов: {{mails_count}}
+        </button>
+      </h2>
+      <div id="collapseOne-{{forloop.counter}}" class="accordion-collapse collapse "
+        aria-labelledby="heading-{{forloop.counter}}" data-bs-parent="#emailPacks">
+        <div class="accordion-body">
+          {%emails_table email_pack.emails.all%}
+        </div>
+      </div>
+    </div>
+    {%endfor%}
+  </div>
+</div>
+
+
+<div class="container">
+  <h4>Сегодняшние письма: {{mails|length}}</h4>
+  {%mails_table mails%}
+</div>
+{%endblock%}

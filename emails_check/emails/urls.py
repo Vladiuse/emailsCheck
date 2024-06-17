@@ -12,4 +12,7 @@ urlpatterns = [
     path('email/send_by_date/<str:date>/', views.emails_send_by_date, name='emails_send_by_date'),
     path('mail_html/<int:mail_id>', views.mail, name='mail'),
     path('alien_links/', views.alien_links, name='alien_links'),
+
+    ####
+    path('test/', views.test, name='test'),
 ]

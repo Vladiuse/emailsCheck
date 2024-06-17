@@ -2,22 +2,32 @@
     <thead>
         <tr>
         <th >id</th>
-        <th >From</th>
+        <th>Team</th>
+        <th >Author</th>
+        <th >Author Email</th>
         <th >Subject</th>
-        <th >Date</th>
+        <th >Send Time</th>
         <th >Raw Date</th>
         <th >Show</th>
+        <th >Email</th>
         </tr>
     </thead>
     <tbody>
         {%for mail in mails%}
         <tr>
         <td>{{mail.id}}</td>
-        <td>{{mail.author}}</td>
+        <td>
+            {%for link in mail.links.all%}
+            {{link.team}}
+            {%endfor%}
+        </td>
+        <td>{{mail.author_name}}</td>
+        <td>{{mail.author_email}}</td>
         <td>{{mail.subject}}</td>
-        <td>{{mail.send_time}}</td>
+        <td>{{mail.send_time|date:"y-m-d H:i:s"}}</td>
         <td>{{mail.raw_send_time}}</td>
         <td><a href="{%url 'emails:mail' mail.pk%}">See</a></td>
+        <td><a href="{%url 'emails:email' mail.email.pk%}">{{mail.email}}</a></td>
         </tr>
         {%endfor%}
     </tbody>

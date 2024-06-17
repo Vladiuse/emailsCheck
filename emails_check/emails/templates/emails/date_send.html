@@ -1,0 +1,14 @@
+{% extends 'emails/base.html'%}
+{%load emails%}
+{%block content%}
+
+<div class="container">
+<h3>Пролив за {{date}}</h3>
+  <h3>Мыл: {{emails|length}}</h3>
+  <h3>Всего писем: {{total_mails}}</h3>
+  <p>{{desc}}</p>
+</div>
+<div class="container">
+   {%emails_table emails%}
+</div>
+{%endblock%}

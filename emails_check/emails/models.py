@@ -1,3 +1,4 @@
+import re
 from django.db import models
 from django.core.files.base import ContentFile
 import os
@@ -6,6 +7,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from domains.models import Domain
+from teams.models import Team
 
 
 def get_domain_from_url(url: str) -> str:
@@ -92,7 +94,7 @@ class Email(models.Model):
                         Mail.objects.create(
                             email=self,
                             subject=subject,
-                            author=_from,
+                            raw_author=_from,
                             send_time=raw_date_to_date(raw_date),
                             raw_send_time=raw_date,
                             raw=ContentFile(str(msg), name='raw.txt'),
@@ -124,7 +126,9 @@ class Mail(models.Model):
     subject = models.CharField(max_length=255)
     raw_send_time = models.CharField(max_length=255)
     send_time = models.DateTimeField(blank=True, null=True)
-    author = models.CharField(max_length=255)
+    author_name = models.CharField(max_length=255, blank=True)
+    author_email = models.CharField(max_length=255, blank=True)
+    raw_author = models.CharField(max_length=255)
     html = models.FileField(upload_to='media/html_emails', blank=True)
     raw = models.FileField(upload_to='media/emails_raw', blank=True)
 
@@ -148,14 +152,23 @@ class Mail(models.Model):
             self.links.all().delete()
         soup = BeautifulSoup(self.html, 'html.parser')
         links = soup.find_all('a')
-        print(self, len(links))
         MailLink.create_links(self, *links)
+
+    def detect_author(self):
+        raw_string = str(self.raw_author)
+        author_name = raw_string[:raw_string.find('<')-1]
+        match = re.search('<.+>',raw_string)
+        author_email =  match[0][1:-1]
+        self.author_email = author_email
+        self.author_name = author_name
+        self.save()
 
 
 class MailLink(models.Model):
     mail = models.ForeignKey(Mail, on_delete=models.CASCADE, related_name='links', related_query_name='link')
     raw_html_link = models.CharField(max_length=255, blank=True)
     link = models.CharField(max_length=255, blank=True)
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, blank=True, null=True, related_name='mail_links', related_query_name='mail_link')
     domain = models.ForeignKey(
         Domain,
         on_delete=models.SET_NULL,
@@ -181,11 +194,18 @@ class MailLink(models.Model):
                 domain = Domain.objects.get(pk=domain_string)
             except Domain.DoesNotExist:
                 domain = None
+            try:
+                team_id = Team.get_sub_team(href)
+                team = Team.objects.get(pk=team_id)
+            except Team.DoesNotExist:
+                team = None
+
             mail_link = MailLink(
                 mail=mail,
                 raw_html_link=str(link),
                 link=href,
-                domain=domain
+                domain=domain,
+                team=team,
             )
             to_create.append(mail_link)
         MailLink.objects.bulk_create(to_create)
